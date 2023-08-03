@@ -26,7 +26,6 @@ body {
 .skills-container {
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .skill-group {
@@ -36,29 +35,45 @@ body {
 
 .skill-box {
     user-select: none;
-    width: calc(100vw / 10);
-    height: calc(100vw / 10);
-    margin: 15px;
-    background-color: #2B2730;
-    border-radius: 20px;
+    width: calc(11.1111vw);
+    height: calc(11.1111vw);
+    background-color: rgb(43, 39, 48);
     display: flex;
     flex-direction: column;
     text-align: center;
     justify-content: space-between;
-    padding: 10px;
     cursor: pointer;
     font-size: 1.2vw;
-    transition: transform 0.3s ease;
+    margin: 5px;
+    border-radius: 1vw;
+    padding: 10px;
+    transition: transform 0.3s ease 0s;
+}
+
+.skill-box-middle {
+    display: flex;
+    justify-content: center;
+    font-size: 3.5vw;
 }
 
 .skill-box:hover {
-    transform: scale(1.2);
+    transform: scale(1.05);
 }
 
 .skill-box-bottom {
     display: flex;
-    justify-content: center;
-    font-size: 3.5vw;
+    justify-content: space-around;
+    font-size: 2vw;
+}
+
+.skill-box-bottom > button {
+    all: unset;
+    border: 1px solid #FFF6F4;
+    width: 4vw;
+}
+
+.skill-box-bottom > button:hover {
+    background-color: #525FE1;
 }
 
 #btnReset {
