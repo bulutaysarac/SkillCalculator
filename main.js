@@ -56,26 +56,54 @@ let skills = [
     new Skill(7, "Connonade Mastery", "Cannon Range", "unit", [25, 25, 25, 25, 25], [new SkillRequirement(6, 4)], 0),
 
     new Skill(8, "Health Fountain", "Hit Points", "unit", [2000, 2500, 2000, 2000, 1500], null, 1),
-    new Skill(9, "Anti Rocket", "Rocket Damage Reduction", "%", [5, 15, 20, 25, 30], [new SkillRequirement(8, 3)], 1),
-    new Skill(10, "Captain's Determination", "Critical Damage Reduction", "%", [5, 10, 20, 30, 35], [new SkillRequirement(9, 3)], 1),
-    new Skill(11, "Healing Boost", "More Healing", "%", [4, 8, 12, 16, 20], [new SkillRequirement(10, 3)], 1),
-    new Skill(12, "Masterful Mend", "More Repair", "%", [4, 8, 12, 16, 20], [new SkillRequirement(11, 3)], 1),
+    new Skill(9, "Anti Rocket", "Less Rocket Damage", "%", [5, 15, 20, 25, 30], [new SkillRequirement(8, 3)], 1),
+    new Skill(10, "Captain's Determination", "Less Critical Damage", "%", [5, 10, 20, 30, 35], [new SkillRequirement(9, 3)], 1),
+    new Skill(11, "Healing Boost", "Healing Value", "%", [4, 8, 12, 16, 20], [new SkillRequirement(10, 3)], 1),
+    new Skill(12, "Masterful Mend", "Repair Value", "%", [4, 8, 12, 16, 20], [new SkillRequirement(11, 3)], 1),
     new Skill(13, "Ironclad Armor", "Less Damage With Plates", "%", [2, 4, 6, 8, 10], [new SkillRequirement(12, 3)], 1),
     new Skill(14, "Revenge", "Reflective Damage", "%", [2, 4, 6, 8, 10], [new SkillRequirement(13, 3), new SkillRequirement(7, 3)], 1),
 
-    new Skill(15, "Golden Plunder", "More Gold Loot", "%", [2, 4, 6, 8, 10], null, 2),
-    new Skill(16, "Bounty", "More Exp Earning", "%", [1, 2, 3, 4, 5], [new SkillRequirement(15, 3)], 2),
-    new Skill(17, "Fortune", "More Crystal Earning", "%", [1, 2, 3, 4, 5], [new SkillRequirement(16, 3)], 2),
-    new Skill(18, "Privateer's Prize", "More Elp Earning", "%", [3, 6, 9, 12, 15], [new SkillRequirement(17, 3)], 2),
-    new Skill(19, "Mystic Vision", "More Vision range", "unit", [100, 200, 300, 400, 500], [new SkillRequirement(18, 3)], 2),
-    new Skill(20, "Swift Sails", "More Speed", "unit", [10, 20, 35], [new SkillRequirement(19, 3)], 2),
+    new Skill(15, "Golden Plunder", "Gold Loot", "%", [2, 4, 6, 8, 10], null, 2),
+    new Skill(16, "Bounty", "Exp Loot", "%", [1, 2, 3, 4, 5], [new SkillRequirement(15, 3)], 2),
+    new Skill(17, "Fortune", "Crystal Loot", "%", [1, 2, 3, 4, 5], [new SkillRequirement(16, 3)], 2),
+    new Skill(18, "Privateer's Prize", "Elp Loot", "%", [3, 6, 9, 12, 15], [new SkillRequirement(17, 3)], 2),
+    new Skill(19, "Mystic Vision", "Vision Range", "unit", [100, 200, 300, 400, 500], [new SkillRequirement(18, 3)], 2),
+    new Skill(20, "Swift Sails", "Speed", "unit", [10, 20, 35], [new SkillRequirement(19, 3)], 2),
 ];
+
+const skillBoxClicked = (e) => {
+    const skillBox = e.target.closest(".skill-box");
+    const toolTipElement = skillBox.querySelector(".tooltip");
+    let skill = skills.find(skill => skill.id === skillBox.skillId);
+
+    if (e.button === 2) {
+        toolTipElement.classList.toggle("hidden");
+        toolTipElement.classList.toggle("visible");
+    }
+};
 
 const drawSkillBoxes = () => {
     for (let i = 0; i < skills.length; i++) {
         const skillsContainer = document.getElementsByClassName("skill-group")[skills[i].skillGroup];
         const skillBox = document.createElement("div");
+        skillBox.skillId = skills[i].id;
         skillBox.classList.add("skill-box");
+        skillBox.addEventListener("click", skillBoxClicked);
+        skillBox.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            skillBoxClicked(e);
+        });
+
+        const toolTipElement = document.createElement("div");
+        toolTipElement.classList.add("tooltip");
+        toolTipElement.classList.add("hidden");
+
+        for (let j = 0; j < skills[i].featureValues.length; j++) {
+            toolTipElement.innerHTML += `<span class="feature">${skills[i].featureValues[j] + skills[i].featureUnit}</span>`;
+            if(j === skills[i].featureValues.length - 1) {
+                toolTipElement.innerHTML += `<span class="feature">${skills[i].feature}</span>`;
+            }
+        }
 
         const skillNameElement = document.createElement("div");
         skillNameElement.innerText = skills[i].name;
@@ -100,12 +128,12 @@ const drawSkillBoxes = () => {
         skillBoxBottomContainer.classList.add("skill-box-bottom");
 
         const btnIncrease = document.createElement("button");
-        btnIncrease.skillId = skills[i].id;
+        btnIncrease.classList.add("btn-increase");
         btnIncrease.addEventListener("click", btnIncreaseClicked);
         btnIncrease.innerText = "+";
 
         const btnDecrease = document.createElement("button");
-        btnDecrease.skillId = skills[i].id;
+        btnDecrease.classList.add("btn-decrease");
         btnDecrease.addEventListener("click", btnDecreaseClicked);
         btnDecrease.innerText = "-";
 
@@ -116,6 +144,7 @@ const drawSkillBoxes = () => {
         skillBoxBottomContainer.append(btnIncrease);
         skillBoxBottomContainer.append(btnDecrease);
 
+        skillBox.append(toolTipElement);
         skillBox.append(skillNameElement);
         skillBox.append(skillBoxMiddleContainer);
         skillBox.append(skillBoxBottomContainer);
@@ -127,7 +156,7 @@ const drawSkillBoxes = () => {
 const updateSkillPoints = (e, action) => {
     const skillBox = e.target.closest(".skill-box");
     const pointsElement = skillBox.querySelector(".skill-point");
-    const skillId = e.target.skillId;
+    const skillId = skillBox.skillId;
     let skill = skills.find(skill => skill.id === skillId);
 
     if (action === "increase") {
