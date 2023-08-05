@@ -37,6 +37,18 @@ class Skill {
     }
 
     decreasePoint() {
+        for (let i = 0; i < skills.length; i++) {
+            if(skills[i].skillRequirements) {
+                for (let j = 0; j < skills[i].skillRequirements.length; j++) {
+                    console.log(skills[i].skillRequirements);
+                    if(skills[i].skillRequirements[j].skillId === this.id && skills[i].points > 0) {
+                        playSound("sounds/error.mp3");
+                        return;
+                    }
+                }
+            }
+        }
+
         if (this.points > 0) {
             this.points--;
             playSound("sounds/negative.mp3");
